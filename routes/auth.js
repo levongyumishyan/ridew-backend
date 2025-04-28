@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator"); // sert à vér
 const Utilisateur = require("../models/Utilisateur");
 const Voiture = require("../models/Voiture"); 
 require("dotenv").config();
+const Trajet = require("../models/Trajet")
 
 const router = express.Router();
 const mdpTailleMin = 6;
@@ -122,6 +123,32 @@ router.post("/logout",[], async (req, res) => {
         res.status(500).json({ msg: "Erreur server" });
     }
 });
+
+
+// TODO:
+router.post("/trajet", [], async (req, res) => 
+{
+    const { id, long, lat, targetLong, targetLat } = req.body;
+    try
+    {
+        const trajet = await Trajet.findOne({ id, long, lat, targetLong, targetLat });
+        await Trajet.updateOne
+        (
+            {id: id},
+            {long: long},
+            {lat: lat},
+            {targetLong: targetLong},
+            {targetLat: targetLat},
+        );
+        res.json({ trajet })
+
+    }
+    catch (err)
+    {
+        console.error(err);
+        res.status(500).json({ msg: "Erreur server" });
+    }
+})
 
 
 
